@@ -8,7 +8,7 @@ namespace JobCandidate.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CandidateController : ControllerBase
+    public class CandidateController : Controller
     {
         private readonly ICandidate _candidateService;
 
@@ -22,22 +22,13 @@ namespace JobCandidate.Controllers
         {
             try
             {
-                var result = await _candidateService.AddUpdateCandidateAsync(model.FirstName);
-                if (result != null)
+                var result = await _candidateService.AddUpdateCandidateAsync(model);
+                return Ok(new ResponseResult
                 {
-                    return Ok(new ResponseResult
-                    {
-                        Status = "success",
-                        Message = "Candidate created successfully",
-                        StatusCode = (int)HttpStatusCode.OK,
+                    Status = "success",
+                    Message = "Candidate created/updated successfully",
+                    StatusCode = (int)HttpStatusCode.OK,
 
-                    });
-                }
-                return BadRequest(new ResponseResult
-                {
-                    Status = "error",
-                    Message = "Error Occurred While Creating Candidate",
-                    StatusCode = (int)HttpStatusCode.BadRequest
                 });
             }
             catch (Exception ex)

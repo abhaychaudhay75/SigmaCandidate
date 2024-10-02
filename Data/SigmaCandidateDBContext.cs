@@ -14,6 +14,8 @@ namespace JobCandidate.Data
             modelBuilder.Entity<CandidateModel>().ToTable("Candidates"); // Pluralized table name
 
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<CandidateModel>()
+        .HasKey(c => c.Id);
         }
 
     }

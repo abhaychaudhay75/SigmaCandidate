@@ -4,6 +4,6 @@ namespace JobCandidate.Services.Interfaces
 {
     public interface ICandidate
     {
-        Task<CandidateModel> AddUpdateCandidateAsync(string FirstName);
+        Task<CandidateModel> AddUpdateCandidateAsync(CandidateModel model);
     }
 }

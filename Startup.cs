@@ -1,4 +1,11 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using JobCandidate.Data;
+using JobCandidate.Models;
+using JobCandidate.Services.Implementations;
+using JobCandidate.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace JobCandidate
 {
@@ -12,8 +19,14 @@ namespace JobCandidate
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthorization();
+            services.AddScoped<ICandidate, CandidateService>();
+            services.AddFluentValidationAutoValidation();
+            services.AddValidatorsFromAssemblyContaining<CandidateModel>();
 
+            services.AddDbContext<SigmaCandidateDBContext>(o => o.UseSqlServer(Configuration.GetConnectionString("Data")));
+
+            services.AddAuthorization();
+            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger", Version = "v1" });
@@ -31,10 +44,20 @@ namespace JobCandidate
                     });
             });
             services.AddHttpContextAccessor();
-            services.AddControllers();
+            
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage(); 
+            }
+            else
+            {
+                app.UseHsts();
+            }
+
+
             // Enable CORS
             app.UseCors("AllowAll");
             app.UseHttpsRedirection();
